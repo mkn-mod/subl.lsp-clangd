@@ -39,7 +39,7 @@ void generate_clangd_file_for(maiken::Application const &app,
                               YAML::Node const &node) {
   mkn::kul::File conf{".clangd", app.project().dir()};
   mkn::kul::io::Writer w{conf};
-  w.write("#  value: value", true);
+
   w << R"(
 CompileFlags:
   Remove:
@@ -74,14 +74,14 @@ CompileFlags:
 }
 
 class Module : public maiken::Module {
- public:
+public:
   void init(maiken::Application &a, YAML::Node const &node)
       KTHROW(std::exception) override {
     generate_clangd_file_for(a, node);
   }
 };
 
-}  // namespace mkn::subl::lsp::clang
+} // namespace mkn::subl::lsp::clang
 
 extern "C" KUL_PUBLISH maiken::Module *maiken_module_construct() {
   return new mkn::subl::lsp::clang::Module;
