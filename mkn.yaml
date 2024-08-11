@@ -1,0 +1,31 @@
+#! clean build -g 0 -W 9 -O 9
+
+name: subl.lsp-clangd
+version: master
+property:
+    maiken_location: ${MKN_HOME}/app/mkn/${version}
+    maiken_scm: https://github.com/mkn/mkn
+
+parent: base
+src: mod.cpp
+mode: shared
+
+profile:
+- name: base
+  dep: mkn&${maiken_location}(${maiken_scm})[mod]
+  if_arg:
+      win_shared: -DYAML_CPP_DLL
+      shared: -DKUL_SHARED
+
+- name: test
+  parent: base
+  main: test.cpp
+  dep: mkn&${maiken_location}(${maiken_scm})[lib]
+
+- name: format
+  mod: |
+    clang.format{init:{style: google, paths: .}}
+
+- name: lsp
+  parent: base
+  mod: subl.lsp-clangd # {init:{remove:{rofl, copter}, add:{loller, skates}}}
