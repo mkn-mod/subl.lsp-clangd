@@ -16,7 +16,6 @@ jobs:
 
     - env:
         MKN_LIB_LINK_LIB: 1
-        MKN_KUL_GIT_CO: --depth 1
       run: |
         curl -fL --retry 3 --retry-delay 2 -o mkn https://github.com/mkn/mkn/releases/download/latest/mkn_nix
         chmod +x mkn
