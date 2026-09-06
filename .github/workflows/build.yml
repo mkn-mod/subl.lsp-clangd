@@ -1,0 +1,32 @@
+
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  KLOG: 3
+  CURL_GET: curl -fL --retry 3 --retry-delay 2
+  PATH_GET: https://github.com/mkn/mkn/releases/download/latest
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - run: |
+        $CURL_GET -o mkn ${PATH_GET}/mkn_nix
+        chmod +x mkn
+        ./mkn clean build run -dtOa "-std=c++20 -fPIC"
+
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v6
+    - run: |
+        $CURL_GET -o mkn ${PATH_GET}/mkn_arm_osx
+        chmod +x mkn
+        ./mkn clean build run -dtOa "-std=c++20 -fPIC"
