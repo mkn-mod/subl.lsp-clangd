@@ -28,16 +28,16 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include <string_view>
-#include <unordered_set>
 
-#include "maiken/module/init.hpp"
+#include "mkn/mod/init.hpp"  // IWYU pragma: keep
+
+#include "mkn/kul/io.hpp"
 
 namespace mkn::subl::lsp::clang {
 
-void generate_clangd_file_for(maiken::Application const &app,
-                              YAML::Node const &node) {
-  mkn::kul::File conf{".clangd", app.project().dir()};
+void generate_clangd_file_for(mkn::mod::Context& ctx, YAML::Node const& node) {
+  auto const state = ctx.state();
+  mkn::kul::File conf{".clangd", state.projectDir};
   mkn::kul::io::Writer w{conf};
 
   w << R"(
@@ -46,12 +46,11 @@ CompileFlags:
 )";
 
   if (node["remove"]) {
-    auto const &rem = node["remove"];
+    auto const& rem = node["remove"];
     if (rem.IsScalar()) {
       w << "    - " << rem.Scalar() << mkn::kul::os::EOL();
     } else if (rem.IsSequence()) {
-      for (auto const &item : rem)
-        w << "    - " << item.Scalar() << mkn::kul::os::EOL();
+      for (auto const& item : rem) w << "    - " << item.Scalar() << mkn::kul::os::EOL();
     }
   }
 
@@ -60,33 +59,28 @@ CompileFlags:
 )";
 
   if (node["add"]) {
-    auto const &add = node["add"];
+    auto const& add = node["add"];
     if (add.IsScalar()) {
       w << "    - " << add.Scalar() << mkn::kul::os::EOL();
     } else if (add.IsSequence()) {
-      for (auto const &item : add)
-        w << "    - " << item.Scalar() << mkn::kul::os::EOL();
+      for (auto const& item : add) w << "    - " << item.Scalar() << mkn::kul::os::EOL();
     }
   }
 
-  for (auto const &[inc, vis] : app.includes())
-    w << "    - -I" << inc << mkn::kul::os::EOL();
+  for (auto const& [inc, vis] : state.includes) w << "    - -I" << inc << mkn::kul::os::EOL();
 }
 
-class Module : public maiken::Module {
-public:
-  void init(maiken::Application &a, YAML::Node const &node)
-      KTHROW(std::exception) override {
-    generate_clangd_file_for(a, node);
+class Module : public mkn::mod::Module {
+ public:
+  void init(mkn::mod::Context& ctx, YAML::Node const& node) KTHROW(std::exception) override {
+    generate_clangd_file_for(ctx, node);
   }
 };
 
-} // namespace mkn::subl::lsp::clang
+}  // namespace mkn::subl::lsp::clang
 
-extern "C" MKN_KUL_PUBLISH maiken::Module *maiken_module_construct() {
+extern "C" MKN_KUL_PUBLISH mkn::mod::Module* maiken_module_construct() {
   return new mkn::subl::lsp::clang::Module;
 }
 
-extern "C" MKN_KUL_PUBLISH void maiken_module_destruct(maiken::Module *p) {
-  delete p;
-}
+extern "C" MKN_KUL_PUBLISH void maiken_module_destruct(mkn::mod::Module* p) { delete p; }

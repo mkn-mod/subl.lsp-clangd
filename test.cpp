@@ -15,10 +15,11 @@ int main(int argc, char* argv[]) {
     auto app = (maiken::Application::CREATE(2, argv2))[0];
     auto loader(maiken::ModuleLoader::LOAD(*app));
     auto appTest = (maiken::Application::CREATE(3, argv3))[0];
-    loader->module()->init(*appTest, node);
-    loader->module()->compile(*appTest, node);
-    loader->module()->link(*appTest, node);
-    loader->module()->pack(*appTest, node);
+    auto& ctx = appTest->context();
+    loader->module()->init(ctx, node);
+    loader->module()->compile(ctx, node);
+    loader->module()->link(ctx, node);
+    loader->module()->pack(ctx, node);
     loader->unload();
   } catch (mkn::kul::Exception const& e) {
     KLOG(ERR) << e.what();

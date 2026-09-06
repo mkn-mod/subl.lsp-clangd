@@ -12,9 +12,9 @@ mode: shared
 
 profile:
 - name: base
-  dep: mkn&${maiken_location}(${maiken_scm})[mod]
+  dep: mkn.mod
   if_arg:
-      win_shared: -DYAML_CPP_DLL
+      win_static: -DYAML_CPP_STATIC_DEFINE
       shared: -DMKN_KUL_SHARED
 
 - name: test
