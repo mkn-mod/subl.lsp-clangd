@@ -8,6 +8,7 @@ on:
     branches: [ main ]
 
 env:
+  KLOG: 3
   CURL_GET: curl -fL --retry 3 --retry-delay 2
   PATH_GET: https://github.com/mkn/mkn/releases/download/latest
 
@@ -19,7 +20,7 @@ jobs:
     - run: |
         $CURL_GET -o mkn ${PATH_GET}/mkn_nix
         chmod +x mkn
-        KLOG=2 ./mkn clean build run -dtOa "-std=c++20 -fPIC"
+        ./mkn clean build run -dtOa "-std=c++20 -fPIC"
 
   macos:
     runs-on: macos-latest
@@ -28,4 +29,4 @@ jobs:
     - run: |
         $CURL_GET -o mkn ${PATH_GET}/mkn_arm_osx
         chmod +x mkn
-        KLOG=2 ./mkn clean build run -dtOa "-std=c++20 -fPIC"
+        ./mkn clean build run -dtOa "-std=c++20 -fPIC"
