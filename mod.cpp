@@ -38,7 +38,7 @@ namespace mkn::subl::lsp::clang {
 void generate_clangd_file_for(mkn::mod::Context& ctx, YAML::Node const& node) {
   auto const state = ctx.state();
   mkn::kul::File conf{".clangd", state.projectDir};
-  mkn::kul::io::Writer w{conf};
+  mkn::kul::io::Writer w{conf.full()};
 
   w << R"(
 CompileFlags:
