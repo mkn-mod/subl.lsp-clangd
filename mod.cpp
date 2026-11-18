@@ -33,12 +33,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "mkn/kul/io.hpp"
 
+#include <filesystem>
+
 namespace mkn::subl::lsp::clang {
 
 void generate_clangd_file_for(mkn::mod::Context& ctx, YAML::Node const& node) {
   auto const state = ctx.state();
-  mkn::kul::File conf{".clangd", state.projectDir};
-  mkn::kul::io::Writer w{conf.full()};
+  mkn::kul::io::Writer w{std::filesystem::path{state.projectDir} / ".clangd"};
 
   w << R"(
 CompileFlags:
